@@ -1,0 +1,79 @@
+﻿@model IEnumerable<DataAccessLayer.Entities.Book>
+@{
+    ViewData["Title"] = "Books list";
+}
+
+<h1>@ViewData["Title"]</h1>
+<div class="add-book-form">
+    <form asp-controller="Books" asp-action="Create" method="post" class="form-inline">
+        <div style="display: flex; gap:10px; align-items:center " class="form-group mx-sm-3 mb-3">
+            <label for="Title" class="sr-only">Title: </label>
+            <input type="text" name="Title" class="form-control" placeholder="Title" required maxlength="20" />
+
+            <label for="Author" class="sr-only">Author: </label>
+            <input type="text" name="Author" class="form-control" placeholder="Author" required maxlength="20" />
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+</div>
+
+<div class="edit-book-form" style="display:none;">
+    <form asp-controller="Books" asp-action="Edit" method="post" class="form-inline">
+        <input type="hidden" name="Id" id="edit-book-id" />
+        <div style="display: flex; gap:10px; align-items:center " class="form-group mx-sm-3 mb-3">
+            <label for="Title" class="sr-only">Title</label>
+            <input type="text" name="Title" id="edit-book-title" class="form-control" placeholder="Title" required maxlength="20" />
+            <label for="Author" class="sr-only">Author</label>
+            <input type="text" name="Author" id="edit-book-author" class="form-control" placeholder="Author" required maxlength="20" />
+            <button type="submit" class="btn btn-warning">update</button>
+            <button type="button" onclick="cancelEditBook()" class="btn btn-outline-dark">cancel</button>
+        </div>
+    </form>
+</div>
+
+<table class="books-table table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Id</td>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td><button class="btn btn-warning" onclick="editBook(@book.Id, '@book.Title', '@book.Author')">Edit</button></td>
+                <td>
+                    <form asp-controller="Books" asp-action="DeleteConfirmed" method="post" asp-route-id="@book.Id">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        
+        function editBook(id, title, author) {
+            document.getElementById('edit-book-id').value = id;
+            document.getElementById('edit-book-title').value = title;
+            document.getElementById('edit-book-author').value = author;
+            document.querySelector('.edit-book-form').style.display = 'block';
+            document.querySelector('.add-book-form').style.display = 'none';
+        }
+        function cancelEditBook() 
+        {
+            document.querySelector('.edit-book-form').style.display = 'none';
+            document.querySelector('.add-book-form').style.display = 'block';
+
+        }
+    </script>
+}
